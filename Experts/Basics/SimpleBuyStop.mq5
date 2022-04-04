@@ -18,23 +18,50 @@ CTrade trade;
 //+------------------------------------------------------------------+
 void OnTick()
   {
+   if(CheckForNewCandle())
+     {
+      OnBar();
+     }
+  }
+
+//+------------------------------------------------------------------+
+//|                                                                  |
+//+------------------------------------------------------------------+
+void OnBar()
+  {
+   Print("OnBar");
    Print("OrdersTotal:", OrdersTotal());
    Print("PositionsTotal:", PositionsTotal());
 // if we have no open orders or positions
-   if((OrdersTotal()<total_orders)
-   //&&(PositionsTotal()==0)
-     )
+//if((OrdersTotal()<total_orders)&&(PositionsTotal()==0)) {
+   trade.BuyLimit(
+      entry_volume,
+      entry_price,
+      _Symbol,
+      stop_loss,
+      take_profit,
+      ORDER_TIME_GTC,
+      0,
+      "Mi comentario"
+   );
+//}
+  }
+//+------------------------------------------------------------------+
+
+
+//+------------------------------------------------------------------+
+//|                                                                  |
+//+------------------------------------------------------------------+
+bool CheckForNewCandle()
+  {
+   static int LastCandleNumber;
+   bool isNewCandle=false;
+   int CandleNumber= Bars(_Symbol,_Period);
+   if(LastCandleNumber<CandleNumber)
      {
-      trade.BuyLimit(
-         entry_volume,
-         entry_price,
-         _Symbol,
-         stop_loss,
-         take_profit,
-         ORDER_TIME_GTC,
-         0,
-         "Mi comentario"
-      );
+      LastCandleNumber=CandleNumber;
+      isNewCandle=true;
      }
+   return isNewCandle;
   }
 //+------------------------------------------------------------------+
